@@ -20,7 +20,12 @@ public class MainWindowViewModel : ViewModelBase
     public string Status
     {
         get => _status;
-        private set => this.RaiseAndSetIfChanged(ref _status, value);
+        private set
+        {
+            this.RaiseAndSetIfChanged(ref _status, value);
+            this.RaisePropertyChanged(nameof(StatusColor));
+            this.RaisePropertyChanged(nameof(IsRunEnabled)); 
+        }
     }
 
     public IBrush StatusColor
@@ -36,7 +41,7 @@ public class MainWindowViewModel : ViewModelBase
         }
     }
     
-    public bool RunEnabled => Status == "Ready";
+    public bool IsRunEnabled => Status == "Ready";
     
     public string CaretPosition => $"0:{CaretIndex}";
     public int CaretIndex
@@ -58,6 +63,7 @@ public class MainWindowViewModel : ViewModelBase
         {
             Status = "Running";
             await RunScriptAsync(Script);
+            Status = "Ready";
         });
     }
     

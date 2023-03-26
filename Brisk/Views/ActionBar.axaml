@@ -21,7 +21,9 @@
 
         <StackPanel Background="{StaticResource ActionButtonsBackground}" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center"
                     HorizontalAlignment="Center">
-            <Button Content="Run" Command="{Binding RunScript}" />
+            <Button Content="Run" 
+                    IsEnabled="{Binding IsRunEnabled}"
+                    Command="{Binding RunScript}" />
             <Button Content="Stop" />
             <Button Content="..." />
         </StackPanel>
