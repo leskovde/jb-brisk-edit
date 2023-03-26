@@ -12,14 +12,14 @@
         <viewModels:MainWindowViewModel />
     </Design.DataContext>
     
-    <Grid Background="Orange" ColumnDefinitions="Auto, *, Auto">
+    <Grid Background="{StaticResource ActionBarBackground}" ColumnDefinitions="Auto, *, Auto">
         <TabControl Grid.Column="0">
             <TabItem Header="File 1" />
             <TabItem Header="File 2" />
             <TabItem Header="File 3" />
         </TabControl>
 
-        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center"
+        <StackPanel Background="{StaticResource ActionButtonsBackground}" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center"
                     HorizontalAlignment="Center">
             <Button Content="Run" />
             <Button Content="Stop" />
