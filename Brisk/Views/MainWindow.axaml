@@ -14,43 +14,63 @@
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel/>
     </Design.DataContext>
-    
-    <!-- Basic IDE layout with a toolbar, text editor, and an output window -->
-    <Grid RowDefinitions="Auto, *, Auto">
-        <!-- Top toolbar -->
-        <Grid Grid.Row="0" Background="Orange" Height="40" ColumnDefinitions="Auto, *, Auto">
-            <Button Grid.Column="0" Content="File" />
-            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <Label FontWeight="Black">BRISK</Label>
-                <Label Content="{Binding CurrentFile}"/>
-            </StackPanel>
-            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <Button Content="Run" />
-                <Button Content="Stop" />
-                <Button Content="..."  />
-            </StackPanel>
-        </Grid>
 
-        <!-- Main text editor -->
-        <Grid Grid.Row="1" ColumnDefinitions="*">
-            <Grid Grid.Column="0" RowDefinitions="*, Auto">
-                <Grid Grid.Row="0" Background="White">
-                    <TextBox TextWrapping="Wrap" 
-                             AcceptsReturn="True" 
-                             AcceptsTab="True"
-                             Text="asd" />
-                </Grid>
-                <Grid Grid.Row="1" Background="White">
-                    <TextBox TextWrapping="Wrap" IsReadOnly="True" Text="123" />
-                </Grid>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open..."/>
+                <Separator/>
+                <MenuItem Header="_Exit"/>
+            </MenuItem>
+            <MenuItem Header="_Edit">
+                <MenuItem Header="Copy"/>
+                <MenuItem Header="Paste"/>
+            </MenuItem>
+        </Menu>
+    
+        <!-- Basic IDE layout with a toolbar, text editor, and an output window -->
+        <Grid DockPanel.Dock="Bottom" RowDefinitions="Auto, *, Auto">
+            <!-- Top toolbar -->
+            <Grid Grid.Row="0" Background="Orange" Height="40" ColumnDefinitions="Auto, *, Auto">
+                <Button Grid.Column="0" Content="File" />
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Label FontWeight="Black">BRISK</Label>
+                    <Label>-</Label>
+                    <Label Content="{Binding CurrentFile}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Button Content="Run" />
+                    <Button Content="Stop" />
+                    <Button Content="..."  />
+                </StackPanel>
+            </Grid>
+
+            <!-- Main text editor -->
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" MinHeight="50"/>
+                    <RowDefinition Height="3" />
+                    <RowDefinition Height="*" MinHeight="50"/>
+                </Grid.RowDefinitions>
+                <TextBox Grid.Row="0" TextWrapping="Wrap" 
+                         AcceptsReturn="True" 
+                         AcceptsTab="True"
+                         Text="asd" />
+                <GridSplitter Grid.Row="1" 
+                              Background="Gray" 
+                              VerticalAlignment="Stretch"
+                              ResizeDirection="Rows"/>
+                <TextBox Grid.Row="2" TextWrapping="Wrap" IsReadOnly="True" Text="123" />
+
+            </Grid>
+            
+            <!-- Bottom status bar -->
+            <Grid Grid.Row="2">
+                <Label>Bottom</Label>
             </Grid>
         </Grid>
-        
-        <!-- Bottom status bar -->
-        <Grid Grid.Row="2">
-            <Label>Bottom</Label>
-        </Grid>
-    </Grid>
+    </DockPanel>
+
 
     <!-- Basic "Hello World" example -->
     <!--<TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>-->
