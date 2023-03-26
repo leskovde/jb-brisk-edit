@@ -3,6 +3,7 @@
         xmlns:vm="using:Brisk.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:Brisk.Views"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Brisk.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -28,39 +29,13 @@
     </Design.DataContext>
 
     <DockPanel>
-        <Grid DockPanel.Dock="Top">
-            <Menu>
-                <MenuItem Header="_File">
-                    <MenuItem Header="_Open..." />
-                    <Separator />
-                    <MenuItem Header="_Exit" />
-                </MenuItem>
-                <MenuItem Header="_Edit">
-                    <MenuItem Header="Copy" />
-                    <MenuItem Header="Paste" />
-                </MenuItem>
-            </Menu>
-            <Label VerticalAlignment="Center" HorizontalAlignment="Center" Content="{Binding CurrentFile}" />
-        </Grid>
-
+        <!-- Top toolbar -->
+        <views:ToolBar DockPanel.Dock="Top" />
 
         <!-- Basic IDE layout with a toolbar, text editor, and an output window -->
         <Grid DockPanel.Dock="Bottom" RowDefinitions="Auto, *, Auto">
-            <!-- Top toolbar -->
-            <Grid Grid.Row="0" Background="Orange" ColumnDefinitions="Auto, *, Auto">
-                <TabControl Grid.Column="0">
-                    <TabItem Header="File 1" />
-                    <TabItem Header="File 2" />
-                    <TabItem Header="File 3" />
-                </TabControl>
-
-                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center"
-                            HorizontalAlignment="Center">
-                    <Button Content="Run" />
-                    <Button Content="Stop" />
-                    <Button Content="..." />
-                </StackPanel>
-            </Grid>
+            <!-- Top action bar -->
+            <views:ActionBar Grid.Row="0" />
 
             <!-- Main text editor -->
             <Grid Grid.Row="1">
@@ -82,9 +57,7 @@
             </Grid>
 
             <!-- Bottom status bar -->
-            <Grid Grid.Row="2">
-                <Label>Bottom</Label>
-            </Grid>
+            <views:StatusBar Grid.Row="2" />
         </Grid>
     </DockPanel>
 
