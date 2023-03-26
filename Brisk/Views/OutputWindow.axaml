@@ -1,0 +1,28 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Brisk.Views.OutputWindow">
+    <UserControl.Styles>
+        <Style Selector="TextBox">
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Background" Value="{StaticResource OutputWindowBackgroundActive}"></Setter>
+        </Style>
+        <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Background" Value="{StaticResource OutputWindowBackgroundActive}"></Setter>
+        </Style>
+        <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Background" Value="{StaticResource OutputWindowBackgroundActive}"></Setter>
+        </Style>
+    </UserControl.Styles>
+    
+    <Grid RowDefinitions="Auto, *">
+        <Grid Grid.Row="0" Height="40" Background="{StaticResource ToolbarBackground}">
+            <Label VerticalAlignment="Center" Padding="10 0 0 0">Output</Label>
+        </Grid>
+        <TextBox Grid.Row="1" TextWrapping="NoWrap" IsReadOnly="True" Text="123" CaretIndex="{Binding Path=CaretIndex, Mode=OneWayToSource}"/>
+    </Grid>
+</UserControl>
