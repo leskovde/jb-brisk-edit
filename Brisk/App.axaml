@@ -10,4 +10,19 @@
     <Application.Styles>
         <FluentTheme Mode="Dark"/>
     </Application.Styles>
+    
+    <Application.Resources>
+        <SolidColorBrush x:Key="TextEditorBackgroundActive" Color="#1C1D1F" />
+        <SolidColorBrush x:Key="TextEditorCurrentLine" Color="#26282A" />
+        <SolidColorBrush x:Key="TextEditorBackgroundInactive" Color="#26282A" />
+        <SolidColorBrush x:Key="OutputWindowBackgroundActive" Color="#1C1D1F" />
+        <SolidColorBrush x:Key="OutputWindowBackgroundInactive" Color="#26282A" />
+        <SolidColorBrush x:Key="ToolbarBackground" Color="#26282A" />
+        <SolidColorBrush x:Key="ActionBarBackground" Color="#1C1D1F" />
+        <SolidColorBrush x:Key="ActionButtonsBackground" Color="#3A5AC3" />
+        <SolidColorBrush x:Key="ActionButtonsHoverBackground" Color="#3450AD" />
+        <SolidColorBrush x:Key="EditorTextColor" Color="#A1ADBE" />
+        <SolidColorBrush x:Key="UiTextColor" Color="#DBDDE1" />
+    </Application.Resources>
+    
 </Application>
