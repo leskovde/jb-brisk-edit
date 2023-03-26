@@ -22,5 +22,5 @@
     <TextBox TextWrapping="NoWrap"
              AcceptsReturn="True"
              AcceptsTab="True"
-             Text="TextWrapping" />
+             Text="{Binding Script}" />
 </UserControl>

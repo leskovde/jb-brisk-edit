@@ -23,6 +23,6 @@
         <Grid Grid.Row="0" Height="40" Background="{StaticResource ToolbarBackground}">
             <Label VerticalAlignment="Center" Padding="10 0 0 0">Output</Label>
         </Grid>
-        <TextBox Grid.Row="1" TextWrapping="NoWrap" IsReadOnly="True" Text="123" CaretIndex="{Binding Path=CaretIndex, Mode=OneWayToSource}"/>
+        <TextBox Grid.Row="1" TextWrapping="NoWrap" IsReadOnly="True" Text="123" />
     </Grid>
 </UserControl>

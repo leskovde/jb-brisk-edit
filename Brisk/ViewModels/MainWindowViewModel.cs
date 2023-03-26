@@ -1,12 +1,28 @@
-﻿using Avalonia.Media;
+﻿using System.Threading.Tasks;
+using System.Windows.Input;
+using Avalonia.Media;
 using ReactiveUI;
 
 namespace Brisk.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
-    public string CurrentFile => "new.txt";
-    public string Status => "Ready";
+    private string _currentFile = "new.swift";
+    private string _status = "Ready";
+    private int _caretIndex;
+
+    public string CurrentFile
+    {
+        get => _currentFile;
+        set => this.RaiseAndSetIfChanged(ref _currentFile, value);
+    }
+    
+    public string Status
+    {
+        get => _status;
+        private set => this.RaiseAndSetIfChanged(ref _status, value);
+    }
+
     public IBrush StatusColor
     {
         get
@@ -19,12 +35,34 @@ public class MainWindowViewModel : ViewModelBase
                 return Brushes.Yellow;
         }
     }
+    
+    public bool RunEnabled => Status == "Ready";
+    
     public string CaretPosition => $"0:{CaretIndex}";
-
-    private int _caretIndex;
     public int CaretIndex
     {
         get => _caretIndex;
         set => this.RaiseAndSetIfChanged(ref _caretIndex, value);
+    }
+    
+    public string Script { get; set; } = """
+                                        // Swift "Hello, World!" 
+                                        Program print("Hello, World!") 
+                                        """;
+
+    public ICommand RunScript { get; }
+    
+    public MainWindowViewModel()
+    {
+        RunScript = ReactiveCommand.CreateFromTask(async () =>
+        {
+            Status = "Running";
+            await RunScriptAsync(Script);
+        });
+    }
+    
+    private async Task RunScriptAsync(string script)
+    {
+        await Task.Delay(1000);
     }
 }
