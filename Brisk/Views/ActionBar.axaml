@@ -6,6 +6,34 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Brisk.Views.ActionBar">
     
+    <UserControl.Styles>
+        <Style Selector="TabControl">
+            <Setter Property="Background" Value="{StaticResource ActionBarBackground}"/>
+        </Style>
+        <Style Selector="TabControl WrapPanel">
+            <Setter Property="Background" Value="{StaticResource ActionBarBackground}"/>
+        </Style>
+
+        <Style Selector="TabItem">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Height" Value="34"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Background" Value="{StaticResource ActionBarBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource EditorTextColor}"/>
+            <Setter Property="Margin" Value="0 0 0 0"/>
+            <Setter Property="Padding" Value="10 5"/>
+        </Style>
+        <Style Selector="TabItem:pointerover">
+            <Setter Property="Foreground" Value="{StaticResource UiTextColor}"/>
+        </Style>
+
+        <Style Selector="TabItem:focus">
+            <Setter Property="Foreground" Value="{StaticResource UiTextColor}"/>
+            <Setter Property="Margin" Value="0 0 0 0"/>
+            <Setter Property="Padding" Value="10 0"/>
+        </Style>
+    </UserControl.Styles>
+    
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
