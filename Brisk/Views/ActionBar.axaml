@@ -37,7 +37,7 @@
         <viewModels:MainWindowViewModel />
     </Design.DataContext>
     
-    <Grid Background="{StaticResource ActionBarBackground}" ColumnDefinitions="Auto, *, Auto">
+    <Grid Background="{StaticResource ActionBarBackground}" ColumnDefinitions="Auto, *, Auto, Auto">
         <TabControl Grid.Column="0" SelectedIndex="{Binding CurrentTabIndex}" Items="{Binding OpenTabs}">
             <TabControl.ItemTemplate>
                 <DataTemplate>
@@ -69,8 +69,9 @@
                     Command="{Binding RunScriptMultipleTimes}" />
             <Button Content="Stop"
                     IsEnabled="{Binding IsStopEnabled}"/>
-            <Button Content="Settings"
-                    Command="{Binding ShowSettings}"/>
         </StackPanel>
+        
+        <Button Grid.Column="3" Margin="20 0 0 0" Content="Settings"
+                Command="{Binding ShowSettings}"/>
     </Grid>
 </UserControl>
