@@ -15,13 +15,18 @@
     <Grid Background="{StaticResource ToolbarBackground}" ColumnDefinitions="Auto, *">
         <Menu Grid.Column="0" IsHitTestVisible="True">
             <MenuItem Header="_File">
-                <MenuItem Header="_Open..." />
+                <MenuItem Header="_New" Command="{Binding NewFile}" />
+                <MenuItem Header="_Open..." Click="OpenFile_Clicked" />
+                <MenuItem Header="_Save" Command="{Binding SaveFile}"/>
                 <Separator />
                 <MenuItem Header="_Exit" />
             </MenuItem>
-            <MenuItem Header="_Edit">
-                <MenuItem Header="Copy" />
-                <MenuItem Header="Paste" />
+            <MenuItem Header="_Run">
+                <MenuItem Header="_Run Current Script" />
+                <MenuItem Header="_Multiple Runs" />
+            </MenuItem>
+            <MenuItem Header="Settings">
+                <MenuItem Header="Set Swift Path" />
             </MenuItem>
         </Menu>
     </Grid>

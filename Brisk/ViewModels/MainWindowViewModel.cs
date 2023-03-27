@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Input;
+using Avalonia.Controls;
 using Avalonia.Media;
 using ReactiveUI;
 
@@ -10,7 +11,9 @@ public class MainWindowViewModel : ViewModelBase
     private string _currentFile = "new.swift";
     private string _status = "Ready";
     private int _caretIndex;
-
+    private int _scriptRunCount = 1;
+    private Task<int> _currentScriptExecution;
+    
     public string CurrentFile
     {
         get => _currentFile;
@@ -55,20 +58,52 @@ public class MainWindowViewModel : ViewModelBase
                                         Program print("Hello, World!") 
                                         """;
 
-    public ICommand RunScript { get; }
+    public int ScriptRunCount
+    {
+        get => _scriptRunCount;
+        set => this.RaiseAndSetIfChanged(ref _scriptRunCount, value);
+    }
     
+    public ICommand RunScript { get; }
+    public ICommand RunScriptMultipleTimes { get; }
+    // public ICommand StopScript { get; }
+    public ICommand NewFile { get; }
+    public ICommand SaveFile { get; }
+
     public MainWindowViewModel()
     {
         RunScript = ReactiveCommand.CreateFromTask(async () =>
         {
             Status = "Running";
-            await RunScriptAsync(Script);
+            _currentScriptExecution = RunScriptAsync(Script);
+            await _currentScriptExecution;
             Status = "Ready";
         });
+        
+        RunScriptMultipleTimes = ReactiveCommand.CreateFromTask(async () =>
+        {
+            Status = "Running";
+            
+            // TODO: Set up the progress bar.
+            
+            for (int i = 0; i < ScriptRunCount; ++i)
+            { 
+                _currentScriptExecution = RunScriptAsync(Script);
+                await _currentScriptExecution;
+            }
+            
+            Status = "Ready";
+        });
+        
+        // StopScript = ReactiveCommand.Create(() =>
+        // {
+        //     Status = "Ready";
+        // });
     }
     
-    private async Task RunScriptAsync(string script)
+    private async Task<int> RunScriptAsync(string script)
     {
-        await Task.Delay(1000);
+        await Task.Delay(5000);
+        return 0;
     }
 }
