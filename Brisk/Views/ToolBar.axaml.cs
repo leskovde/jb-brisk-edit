@@ -5,6 +5,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Brisk.Models;
 using Brisk.ViewModels;
 
 namespace Brisk.Views;
@@ -23,13 +24,13 @@ public partial class ToolBar : UserControl
 
     public async void OpenFile_Clicked(object sender, RoutedEventArgs args)
     {
-        string _path = await GetPath();
+        string path = await GetPath();
         
-        if (string.IsNullOrEmpty(_path))
+        if (string.IsNullOrEmpty(path))
             return;
 
         MainWindowViewModel? context = DataContext as MainWindowViewModel;
-        context.CurrentFile = _path;
+        context.OpenTabs.Add(new TabItemModel(path));
     }
     
     private async Task<string> GetPath()
@@ -42,7 +43,7 @@ public partial class ToolBar : UserControl
 
         string[] result = await dialog.ShowAsync(Parent?.Parent as Window);
 
-        return result.FirstOrDefault();
+        return result?.FirstOrDefault();
     }
 }
 

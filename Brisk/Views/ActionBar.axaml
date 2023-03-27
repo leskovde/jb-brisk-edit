@@ -67,7 +67,10 @@
             <Button Content="Multiple Runs" 
                     IsEnabled="{Binding IsRunEnabled}"
                     Command="{Binding RunScriptMultipleTimes}" />
-            <Button Content="Stop" />
+            <Button Content="Stop"
+                    IsEnabled="{Binding IsStopEnabled}"/>
+            <Button Content="Settings"
+                    Command="{Binding ShowSettings}"/>
         </StackPanel>
     </Grid>
 </UserControl>

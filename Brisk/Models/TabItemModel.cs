@@ -1,3 +1,5 @@
+using System.IO;
+
 namespace Brisk.Models;
 
 public class TabItemModel
@@ -9,5 +11,11 @@ public class TabItemModel
     {
         Header = header;
         Content = content;
+    }
+
+    public TabItemModel(string path)
+    {
+        Header = Path.GetFileName(path);
+        Content = File.ReadAllText(path);
     }
 }

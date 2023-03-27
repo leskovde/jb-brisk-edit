@@ -25,8 +25,8 @@
                 <MenuItem Header="_Run Current Script" />
                 <MenuItem Header="_Multiple Runs" />
             </MenuItem>
-            <MenuItem Header="Settings">
-                <MenuItem Header="Set Swift Path" />
+            <MenuItem Header="Tools">
+                <MenuItem Header="Settings" />
             </MenuItem>
         </Menu>
     </Grid>

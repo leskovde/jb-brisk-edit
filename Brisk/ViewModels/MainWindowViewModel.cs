@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Controls;
@@ -33,8 +34,7 @@ public class MainWindowViewModel : ViewModelBase
 
     public string CurrentFile
     {
-        get => _currentFile;
-        set => this.RaiseAndSetIfChanged(ref _currentFile, value);
+        get => OpenTabs[CurrentTabIndex].Header;
     }
 
     public string Status
@@ -45,6 +45,7 @@ public class MainWindowViewModel : ViewModelBase
             this.RaiseAndSetIfChanged(ref _status, value);
             this.RaisePropertyChanged(nameof(StatusColor));
             this.RaisePropertyChanged(nameof(IsRunEnabled));
+            this.RaisePropertyChanged(nameof(IsStopEnabled));
         }
     }
 
@@ -61,7 +62,8 @@ public class MainWindowViewModel : ViewModelBase
         }
     }
 
-    public bool IsRunEnabled => Status == _readyStatus;
+    public bool IsRunEnabled => Status != _runningStatus;
+    public bool IsStopEnabled => !IsRunEnabled;
 
     public string CaretPosition => $"0:{CaretIndex}";
 
@@ -117,6 +119,7 @@ public class MainWindowViewModel : ViewModelBase
         set
         {
             this.RaiseAndSetIfChanged(ref _currentTabIndex, value);
+            this.RaisePropertyChanged(nameof(CurrentFile));
             this.RaisePropertyChanged(nameof(Script));
         }
     }
@@ -128,9 +131,13 @@ public class MainWindowViewModel : ViewModelBase
     // public ICommand StopScript { get; }
     public ICommand NewFile { get; }
     public ICommand SaveFile { get; }
+    public ICommand ShowSettings { get; }
+    public Interaction<SettingsViewModel, SettingsViewModel?> ShowSettingsWindow { get; }
 
     public MainWindowViewModel()
     {
+        ShowSettingsWindow = new ();
+        
         RunScript = ReactiveCommand.CreateFromTask(async () =>
         {
             Status = _runningStatus;
@@ -143,7 +150,7 @@ public class MainWindowViewModel : ViewModelBase
 
             _currentScriptExecution = RunScriptAsync(Script);
             await _currentScriptExecution;
-            
+
             IsProgressBarVisible = false;
 
             Status = _readyStatus;
@@ -176,11 +183,18 @@ public class MainWindowViewModel : ViewModelBase
 
         NewFile = ReactiveCommand.Create(() =>
         {
-            CurrentFile = _newFileName;
-            Script = _defaultScript;
+            // TODO: Check if the new file already exists and change the name if needed.
+            OpenTabs.Add(new TabItemModel(_newFileName, _defaultScript));
+            CurrentTabIndex = OpenTabs.Count - 1;
         });
 
         SaveFile = ReactiveCommand.Create(async () => { await SaveAsync(); });
+        
+        ShowSettings = ReactiveCommand.Create(async () =>
+        {
+            SettingsViewModel settings = new SettingsViewModel();
+            var dialog = await ShowSettingsWindow.Handle(settings);
+        });
     }
 
     private async Task SaveAsync()
@@ -190,6 +204,8 @@ public class MainWindowViewModel : ViewModelBase
 
     private async Task<int> RunScriptAsync(string script)
     {
+        string command = $"/bin/bash -c \"echo '{script}' | {Settings.Instance.SwiftPath}\"";
+
         await Task.Delay(5000);
         return 0;
     }
