@@ -41,7 +41,15 @@
         <TabControl Grid.Column="0" SelectedIndex="{Binding CurrentTabIndex}" Items="{Binding OpenTabs}">
             <TabControl.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Header}" />
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock VerticalAlignment="Center" Text="{Binding Header}" />
+                        <!-- TODO: Add the close button logic -->
+                        <Button VerticalAlignment="Center" 
+                                Background="{StaticResource ActionBarBackground}" 
+                                Margin="5 0"
+                                FontWeight="Thin"
+                                Content="x"/>
+                    </StackPanel>
                 </DataTemplate>
             </TabControl.ItemTemplate>
             
@@ -56,8 +64,10 @@
             <Button Content="Run" 
                     IsEnabled="{Binding IsRunEnabled}"
                     Command="{Binding RunScript}" />
+            <Button Content="Multiple Runs" 
+                    IsEnabled="{Binding IsRunEnabled}"
+                    Command="{Binding RunScriptMultipleTimes}" />
             <Button Content="Stop" />
-            <Button Content="..." />
         </StackPanel>
     </Grid>
 </UserControl>

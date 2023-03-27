@@ -24,9 +24,11 @@ public class MainWindowViewModel : ViewModelBase
     private string _currentFile = _newFileName;
     private string _status = _readyStatus;
     private int _caretIndex;
-    private int _scriptRunCount = 1;
+    private int _scriptRunCount = 5;
     private bool _isProgressBarVisible = false;
+    private bool _isProgressBarIndeterminate = false;
     private int _currentTabIndex = 0;
+    private int _completedTasksCount = 0;
     private Task<int> _currentScriptExecution;
 
     public string CurrentFile
@@ -72,7 +74,7 @@ public class MainWindowViewModel : ViewModelBase
     public string Script
     {
         get => OpenTabs[CurrentTabIndex].Content;
-        set 
+        set
         {
             OpenTabs[CurrentTabIndex].Content = value;
             this.RaisePropertyChanged(nameof(Script));
@@ -84,13 +86,25 @@ public class MainWindowViewModel : ViewModelBase
         get => _scriptRunCount;
         set => this.RaiseAndSetIfChanged(ref _scriptRunCount, value);
     }
-    
+
     public bool IsProgressBarVisible
     {
         get => _isProgressBarVisible;
         set => this.RaiseAndSetIfChanged(ref _isProgressBarVisible, value);
     }
-    
+
+    public bool IsProgressbarIndeterminate
+    {
+        get => _isProgressBarIndeterminate;
+        set => this.RaiseAndSetIfChanged(ref _isProgressBarIndeterminate, value);
+    }
+
+    public int CompletedTasksCount
+    {
+        get => _completedTasksCount;
+        set => this.RaiseAndSetIfChanged(ref _completedTasksCount, value);
+    }
+
     public List<TabItemModel> OpenTabs { get; set; } = new()
     {
         new("new1.swift", "Console output goes here."),
@@ -104,7 +118,7 @@ public class MainWindowViewModel : ViewModelBase
         {
             this.RaiseAndSetIfChanged(ref _currentTabIndex, value);
             this.RaisePropertyChanged(nameof(Script));
-         }
+        }
     }
 
     public ICommand RunScript { get; }
@@ -120,13 +134,18 @@ public class MainWindowViewModel : ViewModelBase
         RunScript = ReactiveCommand.CreateFromTask(async () =>
         {
             Status = _runningStatus;
-            
+
             // Save the file first.
             await SaveAsync();
-           
+
+            IsProgressBarVisible = true;
+            IsProgressbarIndeterminate = true;
+
             _currentScriptExecution = RunScriptAsync(Script);
             await _currentScriptExecution;
             
+            IsProgressBarVisible = false;
+
             Status = _readyStatus;
         });
 
@@ -136,11 +155,11 @@ public class MainWindowViewModel : ViewModelBase
 
             // Save the file first.
             await SaveAsync();
-            
-            // TODO: Set up the progress bar.
-            IsProgressBarVisible = true;
 
-            for (int i = 0; i < ScriptRunCount; ++i)
+            IsProgressBarVisible = true;
+            IsProgressbarIndeterminate = false;
+
+            for (CompletedTasksCount = 0; CompletedTasksCount < ScriptRunCount; ++CompletedTasksCount)
             {
                 _currentScriptExecution = RunScriptAsync(Script);
                 await _currentScriptExecution;
@@ -161,17 +180,14 @@ public class MainWindowViewModel : ViewModelBase
             Script = _defaultScript;
         });
 
-        SaveFile = ReactiveCommand.Create(async () =>
-        {
-            await SaveAsync();
-        });
+        SaveFile = ReactiveCommand.Create(async () => { await SaveAsync(); });
     }
 
     private async Task SaveAsync()
     {
         await File.WriteAllTextAsync(CurrentFile, Script);
     }
-    
+
     private async Task<int> RunScriptAsync(string script)
     {
         await Task.Delay(5000);

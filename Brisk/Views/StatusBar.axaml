@@ -23,7 +23,12 @@
                VerticalAlignment="Center"
                Content="{Binding Status}" />
         <ProgressBar Grid.Column="3"
-                     VerticalAlignment="Center" />
+                     VerticalAlignment="Center"
+                     IsVisible="{Binding IsProgressBarVisible}"
+                     IsIndeterminate="{Binding IsProgressbarIndeterminate}"
+                     Minimum="0"
+                     Maximum="{Binding ScriptRunCount}"
+                     Value="{Binding CompletedTasksCount}"/>
         <Label Grid.Column="4"
                Margin="10 0 10 0"
                VerticalAlignment="Center"
