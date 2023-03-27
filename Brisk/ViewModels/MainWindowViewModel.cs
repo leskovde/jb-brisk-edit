@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Reactive.Linq;
 using System.Threading;
@@ -15,15 +16,15 @@ namespace Brisk.ViewModels;
 public class MainWindowViewModel : ViewModelBase
 {
     private const string _defaultScript = """
-                                        // Swift "Hello, World!" 
-                                        Program print("Hello, World!") 
+                                        // Swift "Hello, World!" Program
+                                        print("Hello, World!") 
                                         """;
 
     private const string _newFileName = "new.swift";
     private const string _readyStatus = "Ready";
     private const string _runningStatus = "Running";
     private const string _errorStatus = "Error";
-
+    
     private string _status = _readyStatus;
     private int _caretIndex;
     private int _scriptRunCount = 5;
@@ -120,7 +121,7 @@ public class MainWindowViewModel : ViewModelBase
 
     public ObservableCollection<TabItemModel> OpenTabs { get; } = new()
     {
-        new("new1.swift", "Console output goes here."),
+        new("new1.swift", "Program print(\"Hello, World!\")"),
         new("new2.swift", "Error output goes here.")
     };
 
@@ -197,7 +198,7 @@ public class MainWindowViewModel : ViewModelBase
 
         for (CompletedTasksCount = 0; CompletedTasksCount < ScriptRunCount; ++CompletedTasksCount)
         {
-            _currentScriptExecution = RunScriptAsync(Script);
+            _currentScriptExecution = RunScriptAsync();
             int result = await _currentScriptExecution;
 
             if (result == -1)
@@ -211,35 +212,49 @@ public class MainWindowViewModel : ViewModelBase
         Status = _readyStatus;
     }
 
-    private async Task<int> RunScriptAsync(string script)
+    private async Task<int> RunScriptAsync()
     {
-        string command = $"/bin/bash -c \"echo '{script}' | {Settings.Instance.SwiftPath}\"";
-
-        for (int i = 0; i < 5; ++i)
+        if (_tokenSource.IsCancellationRequested)
         {
-            if (_tokenSource.IsCancellationRequested)
-            {
-                OutputContent += "Script execution cancelled.";
-                _tokenSource = new CancellationTokenSource();
-                return -1;
-            }
-
-            await Task.Delay(1000);
-
-            // var process = new Process
-            // {
-            //     StartInfo = new ProcessStartInfo
-            //     {
-            //         FileName = "/bin/bash",
-            //         Arguments = $"-c \"echo '{script}' | {Settings.Instance.SwiftPath}\"",
-            //         RedirectStandardOutput = true,
-            //         RedirectStandardError = true,
-            //         UseShellExecute = false,
-            //         CreateNoWindow = true
-            //     }
-            // };
+            OutputContent += "Script execution cancelled.\n";
+            _tokenSource = new CancellationTokenSource();
+            return -1;
         }
+        
+        var process = new Process
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = Settings.Instance.SwiftPath,
+                Arguments = CurrentFile,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            }
+        };
+        
+        process.OutputDataReceived += OutputHandler;
+        process.ErrorDataReceived += ErrorHandler;
+        
+        process.Start();
+        process.BeginOutputReadLine();
+        process.BeginErrorReadLine();
+        
+        await process.WaitForExitAsync();
 
-        return 0;
+        OutputContent += $"[BRISK]: Script finished with exit code {process.ExitCode}.\n";
+
+        return process.ExitCode;
+    }
+    
+    private void OutputHandler(object sendingProcess, DataReceivedEventArgs outLine)
+    {
+        OutputContent += $"{outLine.Data}\n";
+    }
+    
+    private void ErrorHandler(object sendingProcess, DataReceivedEventArgs outLine)
+    {
+        OutputContent += $"[ERROR]: {outLine.Data}\n";
     }
 }
