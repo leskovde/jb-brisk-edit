@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
@@ -9,7 +8,6 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Media;
 using Brisk.Models;
-using DynamicData;
 using ReactiveUI;
 
 namespace Brisk.ViewModels;
@@ -28,7 +26,8 @@ public class MainWindowViewModel : ViewModelBase
 
     private string _status = _readyStatus;
     private int _caretIndex;
-    private int _scriptRunCount = 5;
+    private int _scriptRunCount = 10;
+    private int _scriptRunCountBackup;
     private bool _isProgressBarVisible = false;
     private bool _isProgressBarIndeterminate = false;
     private int _currentTabIndex = 0;
@@ -142,6 +141,7 @@ public class MainWindowViewModel : ViewModelBase
     public ICommand StopScript { get; }
     public ICommand NewFile { get; }
     public ICommand SaveFile { get; }
+    public ICommand Exit { get; }
     public ICommand ShowSettings { get; }
     public Interaction<SettingsViewModel, SettingsViewModel?> ShowSettingsWindow { get; }
 
@@ -151,13 +151,13 @@ public class MainWindowViewModel : ViewModelBase
 
         RunScript = ReactiveCommand.CreateFromTask(async () =>
         {
-            ScriptRunCount = 1;
+            _scriptRunCountBackup = 1;
             await RunNTimes();
         });
 
         RunScriptMultipleTimes = ReactiveCommand.CreateFromTask(async () =>
         {
-            ScriptRunCount = 5;
+            _scriptRunCountBackup = ScriptRunCount;
             await RunNTimes();
         });
 
@@ -172,6 +172,8 @@ public class MainWindowViewModel : ViewModelBase
 
         SaveFile = ReactiveCommand.Create(async () => { await SaveAsync(); });
 
+        Exit = ReactiveCommand.Create(() => { Environment.Exit(0); });
+        
         ShowSettings = ReactiveCommand.Create(async () =>
         {
             SettingsViewModel settings = new SettingsViewModel();
@@ -195,9 +197,9 @@ public class MainWindowViewModel : ViewModelBase
         await SaveAsync();
 
         IsProgressBarVisible = true;
-        IsProgressbarIndeterminate = ScriptRunCount == 1;
+        IsProgressbarIndeterminate = _scriptRunCountBackup == 1;
 
-        for (CompletedTasksCount = 0; CompletedTasksCount < ScriptRunCount; ++CompletedTasksCount)
+        for (CompletedTasksCount = 0; CompletedTasksCount < _scriptRunCountBackup; ++CompletedTasksCount)
         {
             _currentScriptExecution = RunScriptAsync();
             int result = await _currentScriptExecution;

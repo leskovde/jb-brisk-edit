@@ -19,14 +19,14 @@
                 <MenuItem Header="_Open..." Click="OpenFile_Clicked" />
                 <MenuItem Header="_Save" Command="{Binding SaveFile}"/>
                 <Separator />
-                <MenuItem Header="_Exit" />
+                <MenuItem Header="_Exit" Command="{Binding Exit}" />
             </MenuItem>
             <MenuItem Header="_Run">
-                <MenuItem Header="_Run Current Script" />
-                <MenuItem Header="_Multiple Runs" />
+                <MenuItem Header="_Run Current Script" Command="{Binding RunScript}"/>
+                <MenuItem Header="_Multiple Runs" Command="{Binding RunScriptMultipleTimes}"/>
             </MenuItem>
             <MenuItem Header="Tools">
-                <MenuItem Header="Settings" />
+                <MenuItem Header="Settings" Command="{Binding ShowSettings}" />
             </MenuItem>
         </Menu>
     </Grid>

@@ -14,7 +14,7 @@
 
     <Grid Background="{StaticResource ToolbarBackground}"
           Height="40"
-          ColumnDefinitions="Auto, Auto, *, Auto, Auto">
+          ColumnDefinitions="Auto, Auto, *, Auto">
         <Rectangle Grid.Column="0"
                    Margin="10 0 5 0"
                    VerticalAlignment="Center"
@@ -23,15 +23,12 @@
                VerticalAlignment="Center"
                Content="{Binding Status}" />
         <ProgressBar Grid.Column="3"
+                     Margin="10 0 "
                      VerticalAlignment="Center"
                      IsVisible="{Binding IsProgressBarVisible}"
                      IsIndeterminate="{Binding IsProgressbarIndeterminate}"
                      Minimum="0"
                      Maximum="{Binding ScriptRunCount}"
                      Value="{Binding CompletedTasksCount}"/>
-        <Label Grid.Column="4"
-               Margin="10 0 10 0"
-               VerticalAlignment="Center"
-               Content="{Binding CaretPosition}" />
     </Grid>
 </UserControl>

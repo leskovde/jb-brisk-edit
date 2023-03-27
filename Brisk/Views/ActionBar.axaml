@@ -5,38 +5,38 @@
              xmlns:viewModels="clr-namespace:Brisk.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Brisk.Views.ActionBar">
-    
+
     <UserControl.Styles>
         <Style Selector="TabControl">
-            <Setter Property="Background" Value="{StaticResource ActionBarBackground}"/>
+            <Setter Property="Background" Value="{StaticResource ActionBarBackground}" />
         </Style>
         <Style Selector="TabControl WrapPanel">
-            <Setter Property="Background" Value="{StaticResource ActionBarBackground}"/>
+            <Setter Property="Background" Value="{StaticResource ActionBarBackground}" />
         </Style>
 
         <Style Selector="TabItem">
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Height" Value="34"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="Background" Value="{StaticResource ActionBarBackground}"/>
-            <Setter Property="Foreground" Value="{StaticResource EditorTextColor}"/>
-            <Setter Property="Padding" Value="10 5"/>
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Height" Value="34" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Background" Value="{StaticResource ActionBarBackground}" />
+            <Setter Property="Foreground" Value="{StaticResource EditorTextColor}" />
+            <Setter Property="Padding" Value="10 5" />
         </Style>
         <Style Selector="TabItem:pointerover">
-            <Setter Property="Foreground" Value="{StaticResource UiTextColor}"/>
+            <Setter Property="Foreground" Value="{StaticResource UiTextColor}" />
         </Style>
 
         <Style Selector="TabItem:focus">
-            <Setter Property="Foreground" Value="{StaticResource UiTextColor}"/>
+            <Setter Property="Foreground" Value="{StaticResource UiTextColor}" />
         </Style>
     </UserControl.Styles>
-    
+
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <viewModels:MainWindowViewModel />
     </Design.DataContext>
-    
+
     <Grid Background="{StaticResource ActionBarBackground}" ColumnDefinitions="Auto, *, Auto, Auto">
         <TabControl Grid.Column="0" SelectedIndex="{Binding CurrentTabIndex}" Items="{Binding OpenTabs}">
             <TabControl.ItemTemplate>
@@ -45,35 +45,46 @@
                         <TextBlock VerticalAlignment="Center" Text="{Binding Header}" />
                         <TextBlock VerticalAlignment="Center" Text="*" IsVisible="{Binding Dirty}" />
                         <!-- TODO: Add the close button logic -->
-                        <Button VerticalAlignment="Center" 
-                                Background="{StaticResource ActionBarBackground}" 
+                        <Button VerticalAlignment="Center"
+                                Background="{StaticResource ActionBarBackground}"
                                 Margin="5 0"
                                 FontWeight="Thin"
-                                Content="x"/>
+                                Content="x" />
                     </StackPanel>
                 </DataTemplate>
             </TabControl.ItemTemplate>
-            
+
             <TabControl.ContentTemplate>
                 <DataTemplate>
                 </DataTemplate>
             </TabControl.ContentTemplate>
         </TabControl>
+        
+        <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="10 0">
+            <Label Content="Number of runs:" VerticalAlignment="Center"/>
+            <NumericUpDown Minimum="1" 
+                           Maximum="999" 
+                           ShowButtonSpinner="False" 
+                           VerticalAlignment="Center"
+                           HorizontalContentAlignment="Right"
+                           Value="{Binding ScriptRunCount}" />
+        </StackPanel>
 
-        <StackPanel Background="{StaticResource ActionButtonsBackground}" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center"
+        <StackPanel Background="{StaticResource ActionButtonsBackground}" 
+                    Grid.Column="3" 
+                    Margin="10 0"
+                    Orientation="Horizontal"
+                    VerticalAlignment="Center"
                     HorizontalAlignment="Center">
-            <Button Content="Run" 
+            <Button Content="Run"
                     IsEnabled="{Binding IsRunEnabled}"
                     Command="{Binding RunScript}" />
-            <Button Content="Multiple Runs" 
+            <Button Content="Multiple Runs"
                     IsEnabled="{Binding IsRunEnabled}"
-                    Command="{Binding RunScriptMultipleTimes}" />
+                    Command="{Binding RunScriptMultipleTimes}"/>
             <Button Content="Stop"
                     IsEnabled="{Binding IsStopEnabled}"
                     Command="{Binding StopScript}" />
         </StackPanel>
-        
-        <Button Grid.Column="3" Margin="20 0 0 0" Content="Settings"
-                Command="{Binding ShowSettings}"/>
     </Grid>
 </UserControl>
