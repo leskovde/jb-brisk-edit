@@ -20,10 +20,11 @@
 
     <Window.Styles>
         <Style Selector="TextBox">
+            <!-- TODO: Switch fonts for custom ones. -->
             <Setter Property="FontFamily" Value="Lucida Console" />
         </Style>
     </Window.Styles>
-    
+
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
@@ -43,8 +44,16 @@
         </ExperimentalAcrylicBorder>
 
         <!-- Something to grab the window with -->
-        <Grid DockPanel.Dock="Top" Background="{StaticResource ToolbarBackground}" Height="25" IsHitTestVisible="False">
-            <Label VerticalAlignment="Center" HorizontalAlignment="Center" Content="{Binding CurrentFile}" />
+        <Grid DockPanel.Dock="Top"
+              Background="{StaticResource ToolbarBackground}"
+              Height="25"
+              IsHitTestVisible="False">
+            <StackPanel
+                Orientation="Horizontal"
+                HorizontalAlignment="Center">
+                <Label VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Black" Content="BRISK" />
+                <Label VerticalAlignment="Center" HorizontalAlignment="Center" Content=" - Swift Editor" />
+            </StackPanel>
         </Grid>
 
         <!-- Top toolbar -->
@@ -67,7 +76,7 @@
                               Background="Transparent"
                               VerticalAlignment="Stretch"
                               ResizeDirection="Rows" />
-                <views:OutputWindow Grid.Row="2"/>
+                <views:OutputWindow Grid.Row="2" />
 
             </Grid>
 
