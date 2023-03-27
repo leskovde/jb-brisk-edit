@@ -6,6 +6,7 @@ public class TabItemModel
 {
     public string Header { get; }
     public string Content;
+    public bool Dirty { get; set; }
 
     public TabItemModel(string header, string content)
     {

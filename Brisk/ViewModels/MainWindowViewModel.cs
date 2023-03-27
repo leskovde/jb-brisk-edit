@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Reactive.Linq;
 using System.Threading;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Media;
 using Brisk.Models;
+using DynamicData;
 using ReactiveUI;
 
 namespace Brisk.ViewModels;
@@ -114,7 +116,7 @@ public class MainWindowViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _completedTasksCount, value);
     }
 
-    public List<TabItemModel> OpenTabs { get; set; } = new()
+    public ObservableCollection<TabItemModel> OpenTabs { get; } = new()
     {
         new("new1.swift", "Console output goes here."),
         new("new2.swift", "Error output goes here.")
@@ -197,7 +199,7 @@ public class MainWindowViewModel : ViewModelBase
         for (CompletedTasksCount = 0; CompletedTasksCount < ScriptRunCount; ++CompletedTasksCount)
         {
             _currentScriptExecution = RunScriptAsync(Script);
-            var result = await _currentScriptExecution;
+            int result = await _currentScriptExecution;
 
             if (result == -1)
             {
