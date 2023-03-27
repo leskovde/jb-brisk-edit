@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
@@ -24,7 +25,7 @@ public class MainWindowViewModel : ViewModelBase
     private const string _readyStatus = "Ready";
     private const string _runningStatus = "Running";
     private const string _errorStatus = "Error";
-    
+
     private string _status = _readyStatus;
     private int _caretIndex;
     private int _scriptRunCount = 5;
@@ -203,24 +204,20 @@ public class MainWindowViewModel : ViewModelBase
 
             if (result == -1)
             {
-                // The task was cancelled;
+                // The task was cancelled.
+                await Task.Delay(100);
+                OutputContent += "[BRISK]: The script execution was canceled.\n";
                 break;
             }
         }
 
+        await Task.Delay(100);
         IsProgressBarVisible = false;
         Status = _readyStatus;
     }
 
     private async Task<int> RunScriptAsync()
     {
-        if (_tokenSource.IsCancellationRequested)
-        {
-            OutputContent += "Script execution cancelled.\n";
-            _tokenSource = new CancellationTokenSource();
-            return -1;
-        }
-        
         var process = new Process
         {
             StartInfo = new ProcessStartInfo
@@ -233,28 +230,43 @@ public class MainWindowViewModel : ViewModelBase
                 CreateNoWindow = true
             }
         };
-        
+
         process.OutputDataReceived += OutputHandler;
         process.ErrorDataReceived += ErrorHandler;
-        
+
         process.Start();
         process.BeginOutputReadLine();
         process.BeginErrorReadLine();
-        
-        await process.WaitForExitAsync();
+
+        try
+        {
+            await process.WaitForExitAsync(_tokenSource.Token);
+        }
+        catch (TaskCanceledException)
+        {
+            _tokenSource = new CancellationTokenSource();
+            return -1;
+        }
+        catch (Exception e)
+        {
+            OutputContent += $"[ERROR (Internal)]: {e.Message}\n";
+            _tokenSource = new CancellationTokenSource();
+            return -1;
+        }
 
         OutputContent += $"[BRISK]: Script finished with exit code {process.ExitCode}.\n";
 
         return process.ExitCode;
     }
-    
+
     private void OutputHandler(object sendingProcess, DataReceivedEventArgs outLine)
     {
         OutputContent += $"{outLine.Data}\n";
     }
-    
+
     private void ErrorHandler(object sendingProcess, DataReceivedEventArgs outLine)
     {
-        OutputContent += $"[ERROR]: {outLine.Data}\n";
+        if (!string.IsNullOrEmpty(outLine.Data))
+            OutputContent += $"[ERROR]: {outLine.Data}\n";
     }
 }
