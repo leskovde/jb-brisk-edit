@@ -9,14 +9,14 @@
         <Style Selector="TextBox">
             <Setter Property="BorderBrush" Value="Transparent" />
             <Setter Property="Background" Value="{StaticResource OutputWindowBackgroundActive}"></Setter>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Foreground" Value="{StaticResource OutputWindowTextColor}"/>
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Foreground" Value="{StaticResource OutputWindowTextColor}" />
         </Style>
         <Style Selector="TextBox:pointerover">
-            <Setter Property="Foreground" Value="{StaticResource OutputWindowTextColor}"/>
+            <Setter Property="Foreground" Value="{StaticResource OutputWindowTextColor}" />
         </Style>
         <Style Selector="TextBox:focus">
-            <Setter Property="Foreground" Value="{StaticResource OutputWindowTextColor}"/>
+            <Setter Property="Foreground" Value="{StaticResource OutputWindowTextColor}" />
         </Style>
         <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
             <Setter Property="BorderBrush" Value="Transparent" />
@@ -27,17 +27,17 @@
             <Setter Property="Background" Value="{StaticResource OutputWindowBackgroundActive}"></Setter>
         </Style>
     </UserControl.Styles>
-    
+
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <viewModels:MainWindowViewModel/>
+        <viewModels:MainWindowViewModel />
     </Design.DataContext>
-    
+
     <Grid RowDefinitions="Auto, *">
         <Grid Grid.Row="0" Height="40" Background="{StaticResource ToolbarBackground}">
             <Label VerticalAlignment="Center" Padding="10 0 0 0">Output</Label>
         </Grid>
-        <TextBox Grid.Row="1" TextWrapping="NoWrap" IsReadOnly="True" Text="123" />
+        <TextBox Grid.Row="1" TextWrapping="NoWrap" IsReadOnly="True" Text="{Binding OutputContent}" />
     </Grid>
 </UserControl>

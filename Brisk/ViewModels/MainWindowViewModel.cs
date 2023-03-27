@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Reactive.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Avalonia.Controls;
 using Avalonia.Media;
 using Brisk.Models;
 using ReactiveUI;
@@ -22,7 +22,6 @@ public class MainWindowViewModel : ViewModelBase
     private const string _runningStatus = "Running";
     private const string _errorStatus = "Error";
 
-    private string _currentFile = _newFileName;
     private string _status = _readyStatus;
     private int _caretIndex;
     private int _scriptRunCount = 5;
@@ -31,6 +30,8 @@ public class MainWindowViewModel : ViewModelBase
     private int _currentTabIndex = 0;
     private int _completedTasksCount = 0;
     private Task<int> _currentScriptExecution;
+    private string _outputContent = string.Empty;
+    private CancellationTokenSource _tokenSource = new();
 
     public string CurrentFile
     {
@@ -54,7 +55,7 @@ public class MainWindowViewModel : ViewModelBase
         get
         {
             if (Status == _readyStatus)
-                return Brushes.Green;
+                return Brushes.Lime;
             else if (Status == _errorStatus)
                 return Brushes.Red;
             else
@@ -81,6 +82,12 @@ public class MainWindowViewModel : ViewModelBase
             OpenTabs[CurrentTabIndex].Content = value;
             this.RaisePropertyChanged(nameof(Script));
         }
+    }
+
+    public string OutputContent
+    {
+        get => _outputContent;
+        set => this.RaiseAndSetIfChanged(ref _outputContent, value);
     }
 
     public int ScriptRunCount
@@ -128,7 +135,7 @@ public class MainWindowViewModel : ViewModelBase
 
     public ICommand RunScriptMultipleTimes { get; }
 
-    // public ICommand StopScript { get; }
+    public ICommand StopScript { get; }
     public ICommand NewFile { get; }
     public ICommand SaveFile { get; }
     public ICommand ShowSettings { get; }
@@ -136,50 +143,24 @@ public class MainWindowViewModel : ViewModelBase
 
     public MainWindowViewModel()
     {
-        ShowSettingsWindow = new ();
-        
+        ShowSettingsWindow = new();
+
         RunScript = ReactiveCommand.CreateFromTask(async () =>
         {
-            Status = _runningStatus;
-
-            // Save the file first.
-            await SaveAsync();
-
-            IsProgressBarVisible = true;
-            IsProgressbarIndeterminate = true;
-
-            _currentScriptExecution = RunScriptAsync(Script);
-            await _currentScriptExecution;
-
-            IsProgressBarVisible = false;
-
-            Status = _readyStatus;
+            ScriptRunCount = 1;
+            await RunNTimes();
         });
 
         RunScriptMultipleTimes = ReactiveCommand.CreateFromTask(async () =>
         {
-            Status = _runningStatus;
-
-            // Save the file first.
-            await SaveAsync();
-
-            IsProgressBarVisible = true;
-            IsProgressbarIndeterminate = false;
-
-            for (CompletedTasksCount = 0; CompletedTasksCount < ScriptRunCount; ++CompletedTasksCount)
-            {
-                _currentScriptExecution = RunScriptAsync(Script);
-                await _currentScriptExecution;
-            }
-
-            IsProgressBarVisible = false;
-            Status = _readyStatus;
+            ScriptRunCount = 5;
+            await RunNTimes();
         });
 
-        // StopScript = ReactiveCommand.Create(() =>
-        // {
-        //     Status = "Ready";
-        // });
+        StopScript = ReactiveCommand.Create(() =>
+        {
+            _tokenSource.Cancel();
+        });
 
         NewFile = ReactiveCommand.Create(() =>
         {
@@ -189,11 +170,11 @@ public class MainWindowViewModel : ViewModelBase
         });
 
         SaveFile = ReactiveCommand.Create(async () => { await SaveAsync(); });
-        
+
         ShowSettings = ReactiveCommand.Create(async () =>
         {
             SettingsViewModel settings = new SettingsViewModel();
-            var dialog = await ShowSettingsWindow.Handle(settings);
+            await ShowSettingsWindow.Handle(settings);
         });
     }
 
@@ -202,11 +183,62 @@ public class MainWindowViewModel : ViewModelBase
         await File.WriteAllTextAsync(CurrentFile, Script);
     }
 
+    private async Task RunNTimes()
+    {
+        Status = _runningStatus;
+        OutputContent = string.Empty;
+
+        // Save the file first.
+        await SaveAsync();
+
+        IsProgressBarVisible = true;
+        IsProgressbarIndeterminate = ScriptRunCount == 1;
+
+        for (CompletedTasksCount = 0; CompletedTasksCount < ScriptRunCount; ++CompletedTasksCount)
+        {
+            _currentScriptExecution = RunScriptAsync(Script);
+            var result = await _currentScriptExecution;
+
+            if (result == -1)
+            {
+                // The task was cancelled;
+                break;
+            }
+        }
+
+        IsProgressBarVisible = false;
+        Status = _readyStatus;
+    }
+
     private async Task<int> RunScriptAsync(string script)
     {
         string command = $"/bin/bash -c \"echo '{script}' | {Settings.Instance.SwiftPath}\"";
 
-        await Task.Delay(5000);
+        for (int i = 0; i < 5; ++i)
+        {
+            if (_tokenSource.IsCancellationRequested)
+            {
+                OutputContent += "Script execution cancelled.";
+                _tokenSource = new CancellationTokenSource();
+                return -1;
+            }
+
+            await Task.Delay(1000);
+
+            // var process = new Process
+            // {
+            //     StartInfo = new ProcessStartInfo
+            //     {
+            //         FileName = "/bin/bash",
+            //         Arguments = $"-c \"echo '{script}' | {Settings.Instance.SwiftPath}\"",
+            //         RedirectStandardOutput = true,
+            //         RedirectStandardError = true,
+            //         UseShellExecute = false,
+            //         CreateNoWindow = true
+            //     }
+            // };
+        }
+
         return 0;
     }
 }
