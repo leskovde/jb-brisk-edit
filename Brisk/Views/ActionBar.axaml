@@ -20,7 +20,6 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="Background" Value="{StaticResource ActionBarBackground}"/>
             <Setter Property="Foreground" Value="{StaticResource EditorTextColor}"/>
-            <Setter Property="Margin" Value="0 0 0 0"/>
             <Setter Property="Padding" Value="10 5"/>
         </Style>
         <Style Selector="TabItem:pointerover">
@@ -29,8 +28,6 @@
 
         <Style Selector="TabItem:focus">
             <Setter Property="Foreground" Value="{StaticResource UiTextColor}"/>
-            <Setter Property="Margin" Value="0 0 0 0"/>
-            <Setter Property="Padding" Value="10 0"/>
         </Style>
     </UserControl.Styles>
     
