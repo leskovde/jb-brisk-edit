@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -69,9 +70,7 @@ public class MainWindowViewModel : ViewModelBase
 
     public bool IsRunEnabled => Status != _runningStatus;
     public bool IsStopEnabled => !IsRunEnabled;
-
-    public string CaretPosition => $"0:{CaretIndex}";
-
+    
     public int CaretIndex
     {
         get => _caretIndex;
@@ -121,8 +120,7 @@ public class MainWindowViewModel : ViewModelBase
 
     public ObservableCollection<TabItemModel> OpenTabs { get; } = new()
     {
-        new("new1.swift", "Program print(\"Hello, World!\")"),
-        new("new2.swift", "Error output goes here.")
+        new(_newFileName, _defaultScript),
     };
 
     public int CurrentTabIndex
@@ -165,15 +163,14 @@ public class MainWindowViewModel : ViewModelBase
 
         NewFile = ReactiveCommand.Create(() =>
         {
-            // TODO: Check if the new file already exists and change the name if needed.
-            OpenTabs.Add(new TabItemModel(_newFileName, _defaultScript));
+            OpenTabs.Add(new TabItemModel(GetNewFileName(), _defaultScript));
             CurrentTabIndex = OpenTabs.Count - 1;
         });
 
         SaveFile = ReactiveCommand.Create(async () => { await SaveAsync(); });
 
         Exit = ReactiveCommand.Create(() => { Environment.Exit(0); });
-        
+
         ShowSettings = ReactiveCommand.Create(async () =>
         {
             SettingsViewModel settings = new SettingsViewModel();
@@ -270,5 +267,19 @@ public class MainWindowViewModel : ViewModelBase
     {
         if (!string.IsNullOrEmpty(outLine.Data))
             OutputContent += $"[ERROR]: {outLine.Data}\n";
+    }
+
+    private string GetNewFileName()
+    {
+        int i = 1;
+        string fileName = _newFileName;
+
+        while (OpenTabs.Any(x => x.Header == fileName))
+        {
+            //fileName = $"{_newFileName} ({i++})";
+            fileName = $"{Path.GetFileNameWithoutExtension(_newFileName)}({i++}){Path.GetExtension(_newFileName)}";
+        }
+
+        return fileName;
     }
 }

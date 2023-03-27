@@ -38,7 +38,11 @@
     </Design.DataContext>
 
     <Grid Background="{StaticResource ActionBarBackground}" ColumnDefinitions="Auto, *, Auto, Auto">
-        <TabControl Grid.Column="0" SelectedIndex="{Binding CurrentTabIndex}" Items="{Binding OpenTabs}">
+        <TabControl Grid.Column="0"
+                    AutoScrollToSelectedItem="True"
+
+                    SelectedIndex="{Binding CurrentTabIndex}"
+                    Items="{Binding OpenTabs}">
             <TabControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -59,19 +63,19 @@
                 </DataTemplate>
             </TabControl.ContentTemplate>
         </TabControl>
-        
+
         <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="10 0">
-            <Label Content="Number of runs:" VerticalAlignment="Center"/>
-            <NumericUpDown Minimum="1" 
-                           Maximum="999" 
-                           ShowButtonSpinner="False" 
+            <Label Content="Number of runs:" VerticalAlignment="Center" />
+            <NumericUpDown Minimum="1"
+                           Maximum="999"
+                           ShowButtonSpinner="False"
                            VerticalAlignment="Center"
                            HorizontalContentAlignment="Right"
                            Value="{Binding ScriptRunCount}" />
         </StackPanel>
 
-        <StackPanel Background="{StaticResource ActionButtonsBackground}" 
-                    Grid.Column="3" 
+        <StackPanel Background="{StaticResource ActionButtonsBackground}"
+                    Grid.Column="3"
                     Margin="10 0"
                     Orientation="Horizontal"
                     VerticalAlignment="Center"
@@ -81,7 +85,7 @@
                     Command="{Binding RunScript}" />
             <Button Content="Multiple Runs"
                     IsEnabled="{Binding IsRunEnabled}"
-                    Command="{Binding RunScriptMultipleTimes}"/>
+                    Command="{Binding RunScriptMultipleTimes}" />
             <Button Content="Stop"
                     IsEnabled="{Binding IsStopEnabled}"
                     Command="{Binding StopScript}" />

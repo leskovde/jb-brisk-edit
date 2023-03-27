@@ -15,15 +15,15 @@
     <Grid Background="{StaticResource ToolbarBackground}" ColumnDefinitions="Auto, *">
         <Menu Grid.Column="0" IsHitTestVisible="True">
             <MenuItem Header="_File">
-                <MenuItem Header="_New" Command="{Binding NewFile}" />
+                <MenuItem Header="_New" Command="{Binding NewFile}" HotKey="Ctrl+T" />
                 <MenuItem Header="_Open..." Click="OpenFile_Clicked" />
-                <MenuItem Header="_Save" Command="{Binding SaveFile}"/>
+                <MenuItem Header="_Save" Command="{Binding SaveFile}" HotKey="Ctrl+S"/>
                 <Separator />
                 <MenuItem Header="_Exit" Command="{Binding Exit}" />
             </MenuItem>
             <MenuItem Header="_Run">
-                <MenuItem Header="_Run Current Script" Command="{Binding RunScript}"/>
-                <MenuItem Header="_Multiple Runs" Command="{Binding RunScriptMultipleTimes}"/>
+                <MenuItem Header="_Run Current Script" Command="{Binding RunScript}" HotKey="F5"/>
+                <MenuItem Header="_Multiple Runs" Command="{Binding RunScriptMultipleTimes}" HotKey="F6"/>
             </MenuItem>
             <MenuItem Header="Tools">
                 <MenuItem Header="Settings" Command="{Binding ShowSettings}" />
