@@ -13,10 +13,17 @@
     </Design.DataContext>
     
     <Grid Background="{StaticResource ActionBarBackground}" ColumnDefinitions="Auto, *, Auto">
-        <TabControl Grid.Column="0">
-            <TabItem Header="File 1" />
-            <TabItem Header="File 2" />
-            <TabItem Header="File 3" />
+        <TabControl Grid.Column="0" SelectedIndex="{Binding CurrentTabIndex}" Items="{Binding OpenTabs}">
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Header}" />
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+            
+            <TabControl.ContentTemplate>
+                <DataTemplate>
+                </DataTemplate>
+            </TabControl.ContentTemplate>
         </TabControl>
 
         <StackPanel Background="{StaticResource ActionButtonsBackground}" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center"
