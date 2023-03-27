@@ -43,6 +43,7 @@
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <TextBlock VerticalAlignment="Center" Text="{Binding Header}" />
+                        <TextBlock VerticalAlignment="Center" Text="*" IsVisible="{Binding Dirty}" />
                         <!-- TODO: Add the close button logic -->
                         <Button VerticalAlignment="Center" 
                                 Background="{StaticResource ActionBarBackground}" 

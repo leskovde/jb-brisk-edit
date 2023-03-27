@@ -67,9 +67,9 @@
             <!-- Main text editor -->
             <Grid Grid.Row="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*" MinHeight="50" />
+                    <RowDefinition Height="20*" MinHeight="50" />
                     <RowDefinition Height="2" />
-                    <RowDefinition Height="*" MinHeight="50" />
+                    <RowDefinition Height="15*" MinHeight="50" />
                 </Grid.RowDefinitions>
                 <views:CodeEditor Grid.Row="0" />
                 <GridSplitter Grid.Row="1"

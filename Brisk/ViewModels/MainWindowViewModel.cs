@@ -58,10 +58,11 @@ public class MainWindowViewModel : ViewModelBase
         {
             if (Status == _readyStatus)
                 return Brushes.Lime;
-            else if (Status == _errorStatus)
+
+            if (Status == _errorStatus)
                 return Brushes.Red;
-            else
-                return Brushes.Yellow;
+
+            return Brushes.Yellow;
         }
     }
 
@@ -82,6 +83,7 @@ public class MainWindowViewModel : ViewModelBase
         set
         {
             OpenTabs[CurrentTabIndex].Content = value;
+            OpenTabs[CurrentTabIndex].Dirty = true;
             this.RaisePropertyChanged(nameof(Script));
         }
     }
@@ -134,9 +136,7 @@ public class MainWindowViewModel : ViewModelBase
     }
 
     public ICommand RunScript { get; }
-
     public ICommand RunScriptMultipleTimes { get; }
-
     public ICommand StopScript { get; }
     public ICommand NewFile { get; }
     public ICommand SaveFile { get; }
@@ -159,10 +159,7 @@ public class MainWindowViewModel : ViewModelBase
             await RunNTimes();
         });
 
-        StopScript = ReactiveCommand.Create(() =>
-        {
-            _tokenSource.Cancel();
-        });
+        StopScript = ReactiveCommand.Create(() => { _tokenSource.Cancel(); });
 
         NewFile = ReactiveCommand.Create(() =>
         {
@@ -182,7 +179,9 @@ public class MainWindowViewModel : ViewModelBase
 
     private async Task SaveAsync()
     {
+        int savedTabIndex = CurrentTabIndex;
         await File.WriteAllTextAsync(CurrentFile, Script);
+        OpenTabs[savedTabIndex].Dirty = false;
     }
 
     private async Task RunNTimes()
